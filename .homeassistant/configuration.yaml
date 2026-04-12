@@ -1,0 +1,48 @@
+config:
+history:
+logbook:
+homeassistant:
+
+logger:
+  default: warning
+
+input_boolean:
+  physical_thermostat_heater:
+    name: Physical thermostat heater
+  vtherm_heater:
+    name: VTherm heater
+
+input_number:
+  physical_thermostat_temperature:
+    name: Physical thermostat temperature
+    min: 7
+    max: 35
+    step: 0.5
+    initial: 20
+  vtherm_temperature:
+    name: VTherm temperature
+    min: 7
+    max: 35
+    step: 0.5
+    initial: 20
+
+climate:
+  - platform: generic_thermostat
+    name: Physical Thermostat
+    unique_id: physical_thermostat
+    heater: input_boolean.physical_thermostat_heater
+    target_sensor: input_number.physical_thermostat_temperature
+    target_temp: 20
+    initial_hvac_mode: heat
+    min_temp: 7
+    max_temp: 35
+
+  - platform: generic_thermostat
+    name: VTherm
+    unique_id: vtherm
+    heater: input_boolean.vtherm_heater
+    target_sensor: input_number.vtherm_temperature
+    target_temp: 20
+    initial_hvac_mode: heat
+    min_temp: 7
+    max_temp: 35

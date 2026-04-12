@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Home Assistant: Run local",
+      "type": "shell",
+      "command": "bash .devcontainer/setup-homeassistant.sh && /usr/local/bin/python -m homeassistant --config .homeassistant",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": false
+      },
+      "problemMatcher": []
+    }
+  ]
+}
