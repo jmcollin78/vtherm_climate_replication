@@ -1,0 +1,12 @@
+{
+  "domain": "vtherm_climate_replication",
+  "name": "VTherm Climate Replication",
+  "codeowners": [
+    "@jmcollin78"
+  ],
+  "documentation": "https://github.com/jmcollin78/vtherm_climate_replication",
+  "integration_type": "entity",
+  "issue_tracker": "https://github.com/jmcollin78/vtherm_climate_replication/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

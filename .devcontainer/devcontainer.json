@@ -1,0 +1,62 @@
+{
+    "name": "vtherm-climate-replication",
+    "image": "mcr.microsoft.com/devcontainers/python:3.14-bookworm",
+    "mounts": [
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+    ],
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.analysis.typeCheckingMode": "basic",
+                "python.terminal.activateEnvironment": false,
+                "python.testing.pytestEnabled": true,
+                "python.testing.pytestArgs": ["tests"],
+                "files.eol": "\n",
+                "editor.tabSize": 4,
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "bash",
+                        "args": []
+                    }
+                },
+                "terminal.integrated.defaultProfile.linux": "bash",
+                // "terminal.integrated.shell.linux": "/bin/bash",
+                "python.pythonPath": "/usr/bin/python3",
+                "python.analysis.autoSearchPaths": true,
+                "pylint.lintOnChange": false,
+                "python.formatting.provider": "black",
+                "python.formatting.blackArgs": ["--line-length", "180"],
+                "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+                "editor.formatOnPaste": false,
+                "editor.formatOnSave": true,
+                "editor.formatOnType": true,
+                "files.trimTrailingWhitespace": true
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.pylint",
+                // Doesn't work (crash). Default in python is to use Jedi see Settings / Python / Default Language
+                // "ms-python.vscode-pylance",
+                "ms-python.isort",
+                "ms-python.black-formatter",
+                "redhat.vscode-yaml",
+                "github.vscode-pull-request-github",
+                "ryanluker.vscode-coverage-gutters",
+                "ferrierbenjamin.fold-unfold-all-icone",
+                "donjayamanne.githistory",
+                "waderyan.gitblame",
+                "keesschollaart.vscode-home-assistant",
+                "vscode.markdown-math",
+                "yzhang.markdown-all-in-one",
+                "github.vscode-github-actions",
+                "azuretools.vscode-docker",
+                "huizhou.githd",
+                "github.copilot",
+                "bierner.markdown-mermaid"
+            ]
+        }
+    },
+    "postCreateCommand": "bash .devcontainer/bootstrap-python.sh",
+    "postStartCommand": "bash .devcontainer/bootstrap-python.sh"
+}

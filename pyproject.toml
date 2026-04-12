@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vtherm-climate-replication"
+version = "0.1.0"
+description = "Home Assistant custom integration for Versatile Thermostat climate replication"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+  "vtherm_api @ git+https://github.com/jmcollin78/vtherm_api.git"
+]
+
+[project.optional-dependencies]
+dev = [
+  "homeassistant>=2026.4.1",
+  "pytest>=8.3",
+  "pytest-asyncio>=0.26",
+  "pytest-homeassistant-custom-component>=0.13",
+  "ruff>=0.11"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.black]
+# Work !
+line-length = 180
