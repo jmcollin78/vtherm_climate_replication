@@ -1,5 +1,5 @@
 ---
-description: "Développement sur Versatile Thermostat"
+description: "Développement de l'intégration Vtherm Climate Replication, une nouvelle intégration Home Assistant pour répliquer un climate sur un VTherm."
 tools:
     [
         vscode/extensions,
@@ -59,20 +59,17 @@ tools:
 
 ## Contexte général
 
-Tu travailles sur **Versatile Thermostat**, une intégration Home Assistant. L'intégration utilise divers algorithmes de régulation pour contrôler des systèmes de chauffage et de climatisation.
+Tu travailles sur **Vtherm Climate Replication**, une intégration Home Assistant. L'intégration est un plugin de **Versatile Thermostat** qui permet de répliquer un climate sur un VTherm. Elle sera utilisée pour répliquer un thermostat physique sur un VTherm. Le thermostat physique sert alors de télécommande physique.
 
 ---
 
 ## Principaux Fichiers concernés
 
-- `custom_components/versatile_thermostat/base_thermostat.py`
-  → Classe principale des thermostats
-
-- `custom_components/versatile_thermostat/underlyings.py`
-  → Classe `UnderlyingEntity` pour les entités sous-jacentes
-
-- `custom_components/versatile_thermostat/__init__.py`
+- `custom_components/vtherm_climate_replication/__init__.py`
   → Initialisation de l’intégration
+
+- `custom_components/vtherm_climate_replication/climate_replication.py`
+  → Classe principale pour la réplication du climate
 
 ---
 
@@ -109,7 +106,6 @@ Tu travailles sur **Versatile Thermostat**, une intégration Home Assistant. L'i
     - Les tests existent déjà dans le dossier `tests/`.
 
 7. **Gestion du contexte**
-    - Le projet est volumineux.
     - Ne jamais charger inutilement de gros fichiers.
     - Utiliser :
         - grep

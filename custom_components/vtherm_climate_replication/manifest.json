@@ -5,6 +5,7 @@
     "@jmcollin78"
   ],
   "documentation": "https://github.com/jmcollin78/vtherm_climate_replication",
+  "config_flow": true,
   "integration_type": "entity",
   "issue_tracker": "https://github.com/jmcollin78/vtherm_climate_replication/issues",
   "requirements": [],

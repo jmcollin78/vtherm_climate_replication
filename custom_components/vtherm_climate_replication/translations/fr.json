@@ -1,0 +1,21 @@
+{
+  "title": "VTherm Climate Replication",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurer la replication des climates",
+        "description": "Selectionnez le thermostat physique a recopier et le climate Versatile Thermostat a mettre a jour.",
+        "data": {
+          "physical_climate": "Climate du thermostat physique",
+          "target_climate": "Climate Versatile Thermostat"
+        }
+      }
+    },
+    "error": {
+      "same_climate": "Les deux entites climate doivent etre differentes."
+    },
+    "abort": {
+      "already_configured": "Cette replication de climate est deja configuree."
+    }
+  }
+}
