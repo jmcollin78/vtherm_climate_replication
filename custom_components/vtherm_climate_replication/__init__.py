@@ -9,7 +9,7 @@ from .climate_replication import ClimateReplication
 from .const import DATA_ENABLED, DATA_PHYSICAL_CLIMATE, DATA_REPLICATION, DATA_TARGET_CLIMATE, DOMAIN, PLATFORMS
 
 
-async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+async def async_setup(hass: HomeAssistant, _: dict) -> bool:
     """Set up the integration from yaml."""
     hass.data.setdefault(DOMAIN, {})
     return True

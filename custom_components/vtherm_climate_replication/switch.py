@@ -9,7 +9,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 
-from .const import DATA_ENABLED, DOMAIN
+from .const import DATA_ENABLED, DATA_REPLICATION, DOMAIN
 
 
 async def async_setup_entry(
@@ -43,6 +43,8 @@ class ReplicationEnabledSwitch(RestoreEntity, SwitchEntity):
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
         self._set_enabled(True)
+        replication = self.hass.data[DOMAIN][self._entry.entry_id][DATA_REPLICATION]
+        await replication.async_resync_target_climate_state()
         self.async_write_ha_state()
 
     def turn_on(self, **kwargs) -> None:

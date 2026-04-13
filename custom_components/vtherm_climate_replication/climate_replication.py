@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
+from homeassistant.components.climate import ClimateEntityFeature, DOMAIN as CLIMATE_DOMAIN
 from homeassistant.components.climate.const import (
     ATTR_HVAC_MODE,
     ATTR_PRESET_MODE,
@@ -49,6 +49,19 @@ class ClimateReplication:
             self._remove_state_listener = None
         self._plugin.remove_listeners()
 
+    async def async_resync_target_climate_state(self) -> None:
+        """Synchronize the linked VTherm with the current physical climate state."""
+        physical_state = self._hass.states.get(self._physical_climate_entity_id)
+        if physical_state is None:
+            return
+
+        if not self._link_to_target_vtherm():
+            return
+
+        await self._async_apply_hvac_mode(physical_state)
+        await self._async_apply_preset(physical_state)
+        await self._async_apply_target_temperature(physical_state)
+
     @property
     def _runtime_data(self) -> dict:
         """Return the runtime data for this config entry."""
@@ -92,8 +105,7 @@ class ClimateReplication:
         event: Event[EventStateChangedData],
     ) -> None:
         """Schedule replication when the physical climate changes."""
-        self._hass.async_create_task(
-            self._async_handle_physical_climate_change(event))
+        self._hass.async_create_task(self._async_handle_physical_climate_change(event))
 
     async def _async_handle_physical_climate_change(
         self,
@@ -117,16 +129,22 @@ class ClimateReplication:
 
     async def _async_replicate_hvac_mode(self, old_state: State, new_state: State) -> None:
         """Replicate HVAC mode changes."""
-        old_hvac_mode = old_state.attributes.get(
-            ATTR_HVAC_MODE, old_state.state)
-        new_hvac_mode = new_state.attributes.get(
-            ATTR_HVAC_MODE, new_state.state)
+        old_hvac_mode = old_state.attributes.get(ATTR_HVAC_MODE, old_state.state)
+        new_hvac_mode = new_state.attributes.get(ATTR_HVAC_MODE, new_state.state)
         if old_hvac_mode == new_hvac_mode or new_hvac_mode is None:
+            return
+
+        await self._async_apply_hvac_mode(new_state)
+
+    async def _async_apply_hvac_mode(self, state: State) -> None:
+        """Apply the HVAC mode from the provided state to the linked VTherm."""
+        hvac_mode = state.attributes.get(ATTR_HVAC_MODE, state.state)
+        if hvac_mode is None:
             return
 
         await self._plugin.call_linked_vtherm_action(
             SERVICE_SET_HVAC_MODE,
-            {ATTR_HVAC_MODE: new_hvac_mode},
+            {ATTR_HVAC_MODE: hvac_mode},
         )
 
     async def _async_replicate_preset(self, old_state: State, new_state: State) -> None:
@@ -136,9 +154,19 @@ class ClimateReplication:
         if old_preset == new_preset:
             return
 
+        await self._async_apply_preset(new_state)
+
+    async def _async_apply_preset(self, state: State) -> None:
+        """Apply the preset from the provided state to the linked VTherm."""
+        linked_vtherm = self._plugin.linked_vtherm
+        if not linked_vtherm or not (linked_vtherm.supported_features & ClimateEntityFeature.PRESET_MODE):
+            return
+
+        preset_mode = state.attributes.get(ATTR_PRESET_MODE)
+
         await self._plugin.call_linked_vtherm_action(
             SERVICE_SET_PRESET_MODE,
-            {ATTR_PRESET_MODE: new_preset or PRESET_NONE},
+            {ATTR_PRESET_MODE: preset_mode or PRESET_NONE},
         )
 
     async def _async_replicate_target_temperature(self, old_state: State, new_state: State) -> None:
@@ -148,7 +176,15 @@ class ClimateReplication:
         if old_temperature == new_temperature or new_temperature is None:
             return
 
+        await self._async_apply_target_temperature(new_state)
+
+    async def _async_apply_target_temperature(self, state: State) -> None:
+        """Apply the target temperature from the provided state to the linked VTherm."""
+        temperature = state.attributes.get(ATTR_TEMPERATURE)
+        if temperature is None:
+            return
+
         await self._plugin.call_linked_vtherm_action(
             SERVICE_SET_TEMPERATURE,
-            {ATTR_TEMPERATURE: new_temperature},
+            {ATTR_TEMPERATURE: temperature},
         )
