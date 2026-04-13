@@ -1,32 +1,70 @@
-# vtherm_climate_replication
+# VTherm Climate Replication
 
-Squelette initial d'une integration Home Assistant destinee a servir de plugin pour Versatile Thermostat.
+VTherm Climate Replication is a Home Assistant custom integration for Versatile Thermostat.
 
-## Structure
+It links a physical thermostat entity to a Versatile Thermostat climate entity and forwards the physical thermostat state changes to the target VTherm. The goal is to use a real thermostat as a physical remote control for a VTherm.
 
-- `custom_components/vtherm_climate_replication/` : composant Home Assistant.
-- `.devcontainer/` : environnement VS Code reproducible en Python 3.14.
-- `tests/` : validations de base du squelette.
+## What the integration does
 
-## Devcontainer
+For each configured pair, the integration listens to the selected physical climate entity and updates the selected Versatile Thermostat climate entity.
 
-Le devcontainer utilise l'image officielle Dev Containers Python 3.14.
+The integration currently replicates:
 
-Le travail se fait directement avec le Python du conteneur. Aucun environnement virtuel n'est cree ni attendu dans ce depot.
+- HVAC mode
+- Target temperature
+- Preset mode when the target VTherm supports presets
 
-Les dependances Python sont decrites dans `requirements.txt` et `requirements-dev.txt`. Elles sont reinstallees automatiquement a la creation puis a chaque demarrage du devcontainer.
+Each replication entry also creates a switch entity. This switch can be used to temporarily disable replication without removing the configuration entry. When the switch is turned on again, the target VTherm is immediately resynchronized with the current state of the physical thermostat.
 
-Une fois le depot ouvert dans VS Code, lancer "Reopen in Container" pour travailler directement dans l'environnement configure.
+## Requirements
 
-## Lancer Home Assistant en local
+Before installing this integration, make sure that:
 
-Une configuration minimale Home Assistant est fournie dans `.homeassistant/configuration.yaml`.
+- Versatile Thermostat is already installed in Home Assistant
+- the physical thermostat you want to mirror is available as a climate entity
+- the target Versatile Thermostat is already created and available as a climate entity
 
-Le bootstrap du devcontainer recree automatiquement `.homeassistant` et le lien vers `custom_components` a chaque creation et a chaque redemarrage du conteneur.
+## Installation
 
-Dans VS Code, ouvrir la palette de commandes puis lancer `Tasks: Run Task`, et choisir `Home Assistant: Run local`.
+### Option 1: Install with HACS
 
-La tache :
-- utilise la configuration locale `.homeassistant`
-- relie `custom_components` dans ce dossier pour charger l'integration du depot
-- demarre Home Assistant avec le Python du devcontainer
+1. Open HACS in Home Assistant.
+2. Add this repository as a custom repository.
+3. Select the Integration category.
+4. Install VTherm Climate Replication.
+5. Restart Home Assistant.
+
+### Option 2: Manual installation
+
+1. Copy the `custom_components/vtherm_climate_replication` folder into your Home Assistant `custom_components` directory.
+2. Restart Home Assistant.
+
+## Configuration
+
+This integration is configured from the Home Assistant user interface. There is no YAML configuration.
+
+1. Go to Settings > Devices & Services.
+2. Select Add Integration.
+3. Search for VTherm Climate Replication.
+4. Choose the physical thermostat climate entity.
+5. Choose the Versatile Thermostat climate entity to update.
+6. Confirm the configuration.
+
+The two selected climate entities must be different.
+
+You can create multiple replication entries, but the same physical climate and target climate pair cannot be configured twice.
+
+## How to use it
+
+After the integration is configured:
+
+- change the HVAC mode on the physical thermostat to update the VTherm
+- change the target temperature on the physical thermostat to update the VTherm
+- change the preset on the physical thermostat to update the VTherm when presets are supported
+- use the replication switch entity to enable or disable forwarding at runtime
+
+## Notes
+
+- The integration adds a switch platform only.
+- Replication is enabled by default when a configuration entry is created.
+- Turning replication back on triggers a full state resynchronization from the physical thermostat to the target VTherm.
