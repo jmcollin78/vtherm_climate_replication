@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from homeassistant.components.climate import ClimateEntityFeature, DOMAIN as CLIMATE_DOMAIN
 from homeassistant.components.climate.const import (
+    ClimateEntityFeature,
+    DOMAIN as CLIMATE_DOMAIN,
     ATTR_HVAC_MODE,
     ATTR_PRESET_MODE,
     PRESET_NONE,
