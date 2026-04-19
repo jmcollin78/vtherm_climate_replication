@@ -2,17 +2,14 @@
 
 from __future__ import annotations
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(__name__)
+
 from .climate_replication import ClimateReplication
 from .const import DATA_ENABLED, DATA_PHYSICAL_CLIMATE, DATA_REPLICATION, DATA_TARGET_CLIMATE, DOMAIN, PLATFORMS
-
-
-async def async_setup(hass: HomeAssistant, _: dict) -> bool:
-    """Set up the integration from yaml."""
-    hass.data.setdefault(DOMAIN, {})
-    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
