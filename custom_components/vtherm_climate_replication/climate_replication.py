@@ -32,6 +32,7 @@ class ClimateReplication:
         self._entry = entry
         self._plugin = PluginClimate(hass)
         self._remove_state_listener: Callable[[], None] | None = None
+        self._pending_preset_temperature: float | int | None = None
 
     async def async_setup(self) -> None:
         """Start the replication controller."""
@@ -154,13 +155,15 @@ class ClimateReplication:
         if old_preset == new_preset:
             return
 
-        await self._async_apply_preset(new_state)
+        self._pending_preset_temperature = None
+        if await self._async_apply_preset(new_state):
+            self._pending_preset_temperature = new_state.attributes.get(ATTR_TEMPERATURE)
 
-    async def _async_apply_preset(self, state: State) -> None:
+    async def _async_apply_preset(self, state: State) -> bool:
         """Apply the preset from the provided state to the linked VTherm."""
         linked_vtherm = self._plugin.linked_vtherm
         if not linked_vtherm or not (linked_vtherm.supported_features & ClimateEntityFeature.PRESET_MODE):
-            return
+            return False
 
         preset_mode = state.attributes.get(ATTR_PRESET_MODE)
 
@@ -168,6 +171,7 @@ class ClimateReplication:
             SERVICE_SET_PRESET_MODE,
             {ATTR_PRESET_MODE: preset_mode or PRESET_NONE},
         )
+        return True
 
     async def _async_replicate_target_temperature(self, old_state: State, new_state: State) -> None:
         """Replicate target temperature changes."""
@@ -176,6 +180,11 @@ class ClimateReplication:
         if old_temperature == new_temperature or new_temperature is None:
             return
 
+        if self._pending_preset_temperature == new_temperature:
+            self._pending_preset_temperature = None
+            return
+
+        self._pending_preset_temperature = None
         await self._async_apply_target_temperature(new_state)
 
     async def _async_apply_target_temperature(self, state: State) -> None:
