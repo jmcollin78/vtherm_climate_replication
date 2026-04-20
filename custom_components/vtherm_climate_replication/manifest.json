@@ -9,6 +9,8 @@
   "integration_type": "device",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/jmcollin78/vtherm_climate_replication/issues",
-  "requirements": [],
-  "version": "0.1.1"
+  "requirements": [
+    "vtherm_api>=0.2.0"
+  ],
+  "version": "0.2.0"
 }

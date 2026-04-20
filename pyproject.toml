@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vtherm-climate-replication"
-version = "0.1.0"
+version = "0.2.0"
 description = "Home Assistant custom integration for Versatile Thermostat climate replication"
 readme = "README.md"
 requires-python = ">=3.14"
